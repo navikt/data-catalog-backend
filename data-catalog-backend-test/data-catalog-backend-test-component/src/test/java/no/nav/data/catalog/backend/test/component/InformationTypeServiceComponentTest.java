@@ -47,9 +47,9 @@
 //
 //	@Test
 //	public void should_getRecordById_givenIdToExistingDocument() {
-//		when(recordServiceMock.getInformationTypeById(getInntektId())).thenReturn(getSivilstandRecord());
+//		when(recordServiceMock.getInformationTypeById(getElasticsearchId_sivilstand())).thenReturn(getSivilstandRecord());
 //
-//		Record record = recordServiceMock.getInformationTypeById(getInntektId());
+//		Record record = recordServiceMock.getInformationTypeById(getElasticsearchId_sivilstand());
 //		assertEquals(record, getSivilstandRecord());
 //	}
 //
@@ -71,11 +71,11 @@
 //	@Test
 //	public void should_updateFieldsById_givenIdToExistingDocument() {
 //		String updateString = getUpdateJsonString();
-//		when(recordServiceMock.updateInformationTypeById(getInntektId(), updateString)).thenReturn(getUpdatedResponse());
+//		when(recordServiceMock.updateInformationTypeById(getElasticsearchId_sivilstand(), updateString)).thenReturn(getUpdatedResponse());
 //
-//		RecordResponse recordResponse = recordServiceMock.updateInformationTypeById(getInntektId(), updateString);
+//		RecordResponse recordResponse = recordServiceMock.updateInformationTypeById(getElasticsearchId_sivilstand(), updateString);
 //		assertEquals(recordResponse, getUpdatedResponse());
-//		assertEquals(recordResponse.getStatus(), String.format("Updated record with id=%s", getInntektId()));
+//		assertEquals(recordResponse.getStatus(), String.format("Updated record with id=%s", getElasticsearchId_sivilstand()));
 //	}
 //
 //	@Test
@@ -95,11 +95,11 @@
 //
 //	@Test
 //	public void should_deleteRecordById_givenIdToExistingDocument() {
-//		when(recordServiceMock.deleteInformationTypeById(getInntektId())).thenReturn(getDeleteResponse());
+//		when(recordServiceMock.deleteInformationTypeById(getElasticsearchId_sivilstand())).thenReturn(getDeleteResponse());
 //
-//		RecordResponse recordResponse = recordServiceMock.deleteInformationTypeById(getInntektId());
+//		RecordResponse recordResponse = recordServiceMock.deleteInformationTypeById(getElasticsearchId_sivilstand());
 //		assertEquals(recordResponse, getDeleteResponse());
-//		assertEquals(recordResponse.getStatus(), String.format("Deleted record with id=%s", getInntektId()));
+//		assertEquals(recordResponse.getStatus(), String.format("Deleted record with id=%s", getElasticsearchId_sivilstand()));
 //	}
 //
 //	@Test

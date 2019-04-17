@@ -9,6 +9,7 @@ import no.nav.data.catalog.backend.app.common.elasticsearch.ElasticsearchService
 import no.nav.data.catalog.backend.app.common.elasticsearch.ElasticsearchStatus;
 import no.nav.data.catalog.backend.app.common.exceptions.DataCatalogBackendNotFoundException;
 import no.nav.data.catalog.backend.app.common.exceptions.DataCatalogBackendTechnicalException;
+import org.elasticsearch.action.search.SearchResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -123,5 +124,9 @@ public class InformationTypeService {
 		}
 	}
 
-	//TODO: resendToElasticsearch()
+	public SearchResponse searchByField(String fieldName, String fieldValue) {
+		return elasticsearchService.searchByField(fieldName, fieldValue);
+	}
+
+	//TODO: resendToElasticsearch() deleteAllInElasticSearch()
 }
