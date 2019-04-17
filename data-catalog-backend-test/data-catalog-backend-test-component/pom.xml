@@ -44,13 +44,6 @@
 			<version>${junit.version}</version>
 			<scope>test</scope>
 		</dependency>
-
-		<dependency>
-			<groupId>org.testcontainers</groupId>
-			<artifactId>elasticsearch</artifactId>
-			<version>${elasticsearch.testcontainer.version}</version>
-			<scope>test</scope>
-		</dependency>
 	</dependencies>
 
 	<build>

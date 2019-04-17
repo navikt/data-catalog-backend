@@ -39,6 +39,7 @@ public class GetFromGithubSaveElasticsearchIT {
     @Autowired
     private GithubService service;
 
+	//TODO: Fix testcontainers for elasticsearch and postgres
 //    @ClassRule
 //    public static FixedElasticsearchContainer elasticsearchTestContainer =
 //            new FixedElasticsearchContainer("docker.elastic.co/elasticsearch/elasticsearch-oss:6.6.1");
@@ -93,13 +94,11 @@ public class GetFromGithubSaveElasticsearchIT {
         service.handle("testdataIkkeSlett/multipleRows.json");
         //Give elasticsearch a few seconds to index documents
         Thread.sleep(2000L);
-//        List<Record> recordList = recordService.getAllRecords();
 		List<InformationType> informationTypeList = informationTypeService.getAllInformationTypes();
 		assertEquals(6, informationTypeList.size());
     }
 
     private void deleteAllFromElasticsearch() {
-//        List<Record> recordList = new ArrayList<>();
 		List<InformationType> informationTypeList = new ArrayList<>();
         try {
 			informationTypeList = informationTypeService.getAllInformationTypes();
