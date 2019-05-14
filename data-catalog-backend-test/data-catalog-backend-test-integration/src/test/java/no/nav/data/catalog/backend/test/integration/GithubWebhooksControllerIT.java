@@ -1,5 +1,9 @@
 package no.nav.data.catalog.backend.test.integration;
 
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+
 import no.nav.data.catalog.backend.app.AppStarter;
 import no.nav.data.catalog.backend.app.github.domain.GithubCommitInfo;
 import no.nav.data.catalog.backend.app.github.domain.GithubPushEventPayloadRequest;
@@ -28,10 +32,6 @@ import org.testcontainers.containers.PostgreSQLContainer;
 
 import java.time.Duration;
 import java.util.Arrays;
-
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
 
 
 @RunWith(SpringRunner.class)
@@ -97,7 +97,7 @@ public class GithubWebhooksControllerIT {
         ResponseEntity<String> responseEntity = restTemplate.exchange(
                 "/backend/webhooks", HttpMethod.POST, new HttpEntity<>(request), String.class);
         assertThat(responseEntity.getStatusCode(), is (HttpStatus.INTERNAL_SERVER_ERROR));
-        assertThat(responseEntity.getBody(), containsString ("Validation errors occured when validating input file from Github"));
+        assertThat(responseEntity.getBody(), containsString ("Validation errors occurred when validating InformationTypeRequest"));
     }
 
     @Test

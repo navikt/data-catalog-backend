@@ -86,6 +86,7 @@ public class InformationTypeController {
 		logger.info("Received a request to create InformationType");
 		try {
 			service.validateRequest(request, false);
+			request = service.convertCodelistToId(request);
 		}
 		catch (ValidationException e) {
 			logger.info("Cannot create an InformationType due to invalid request");
@@ -113,6 +114,7 @@ public class InformationTypeController {
 		}
 		try {
 			service.validateRequest(request, true);
+			request = service.convertCodelistToId(request);
 		}
 		catch (ValidationException e) {
 			logger.info("Cannot create an InformationType due to invalid request");

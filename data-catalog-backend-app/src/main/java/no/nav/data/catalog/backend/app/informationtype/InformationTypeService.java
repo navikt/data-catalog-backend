@@ -7,6 +7,7 @@ import static no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus.
 import static no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus.TO_BE_UPDATED;
 
 import lombok.extern.slf4j.Slf4j;
+import no.nav.data.catalog.backend.app.codelist.CodelistRepository;
 import no.nav.data.catalog.backend.app.codelist.ListName;
 import no.nav.data.catalog.backend.app.common.exceptions.ValidationException;
 import no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchRepository;
@@ -31,6 +32,9 @@ public class InformationTypeService {
 
 	@Autowired
 	private ElasticsearchRepository elasticsearch;
+
+	@Autowired
+	private CodelistRepository codelistRepository;
 
 	public void synchToElasticsearch() {
 		createInformationTypesInElasticsearch();
@@ -101,5 +105,12 @@ public class InformationTypeService {
 			logger.error("Validation errors occurred when validating InformationTypeRequest: {}", validationErrors);
 			throw new ValidationException(validationErrors, "Validation errors occurred when validating InformationTypeRequest.");
 		}
+	}
+
+	public InformationTypeRequest convertCodelistToId(InformationTypeRequest request){
+		request.setCategoryId(codelistRepository.findByListAndCode(ListName.CATEGORY, request.getCategory().toUpperCase()).get().getId());
+		request.setProducerId(codelistRepository.findByListAndCode(ListName.PRODUCER, request.getProducer().toUpperCase()).get().getId());
+		request.setSystemId(codelistRepository.findByListAndCode(ListName.SYSTEM, request.getSystem().toUpperCase()).get().getId());
+		return request;
 	}
 }

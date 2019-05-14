@@ -42,7 +42,7 @@ public class ElasticsearchRepository {
 	RestHighLevelClient restHighLevelClient;
 
 	public void insertInformationType(Map<String, Object> jsonMap) {
-		String id = jsonMap.get("id").toString();
+		String id = jsonMap.get("elasticsearchId").toString();
 		logger.info("insertInformationType: Insert new InformationType with document id={}", id);
 		IndexRequest indexRequest = new IndexRequest(INDEX, TYPE, id);
 		indexRequest.source(jsonMap);

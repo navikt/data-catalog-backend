@@ -50,15 +50,15 @@ public class InformationType extends Auditable<String> {
 
 	@NotNull
 	@Column(name = "CATEGORY", nullable = false)
-	private String category;
+	private Long category;
 
 	@NotNull
 	@Column(name = "PRODUCER")
-	private String producer;
+	private Long producer;
 
 	@NotNull
 	@Column(name = "SYSTEM")
-	private String system;
+	private Long system;
 
 	@NotNull
 	@Column(name = "PERSONAL_DATA", nullable = false)
@@ -76,13 +76,13 @@ public class InformationType extends Auditable<String> {
 
 	public Map<String, Object> convertToMap() {
 		Map<String, Object> jsonMap = new HashMap<>();
-		jsonMap.put("id", elasticsearchId);
+		jsonMap.put("elasticsearchId", elasticsearchId);
 		jsonMap.put("informationTypeId", id);
 		jsonMap.put("name", name);
 		jsonMap.put("description", description);
-		jsonMap.put("informationCategory", category);
-		jsonMap.put("informationProducer", producer);
-		jsonMap.put("informationSystem", system);
+		jsonMap.put("category", category);
+		jsonMap.put("producer", producer);
+		jsonMap.put("system", system);
 		jsonMap.put("personalData", personalData);
 
 		return jsonMap;
@@ -96,9 +96,9 @@ public class InformationType extends Auditable<String> {
 			this.elasticsearchId = base64UUID();
 		}
 		this.name = request.getName();
-		this.category = request.getCategory();
-		this.producer = request.getProducer();
-		this.system = request.getSystem();
+		this.category = request.getCategoryId();
+		this.producer = request.getProducerId();
+		this.system = request.getSystemId();
 		this.description = request.getDescription();
 		this.personalData = request.getPersonalData();
 		return this;

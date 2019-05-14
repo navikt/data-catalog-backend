@@ -1,5 +1,18 @@
 package no.nav.data.catalog.backend.test.integration;
 
+import static no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus.TO_BE_DELETED;
+import static no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus.TO_BE_UPDATED;
+import static no.nav.data.catalog.backend.test.integration.TestData.TestData.CATEGORY;
+import static no.nav.data.catalog.backend.test.integration.TestData.TestData.CATEGORY_ID_PERSONALIA;
+import static no.nav.data.catalog.backend.test.integration.TestData.TestData.DESCRIPTION;
+import static no.nav.data.catalog.backend.test.integration.TestData.TestData.INFORMATION_NAME;
+import static no.nav.data.catalog.backend.test.integration.TestData.TestData.PRODUCER;
+import static no.nav.data.catalog.backend.test.integration.TestData.TestData.PRODUCER_ID_SKATTEETATEN;
+import static no.nav.data.catalog.backend.test.integration.TestData.TestData.SYSTEM;
+import static no.nav.data.catalog.backend.test.integration.TestData.TestData.SYSTEM_ID_AA_REG;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+
 import no.nav.data.catalog.backend.app.AppStarter;
 import no.nav.data.catalog.backend.app.informationtype.InformationType;
 import no.nav.data.catalog.backend.app.informationtype.InformationTypeRepository;
@@ -28,12 +41,6 @@ import org.testcontainers.containers.PostgreSQLContainer;
 
 import java.time.Duration;
 import java.util.List;
-
-import static no.nav.data.catalog.backend.app.common.utils.Constants.*;
-import static no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus.TO_BE_DELETED;
-import static no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus.TO_BE_UPDATED;
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
@@ -98,13 +105,13 @@ public class InformationTypeControllerIT {
         assertThat(repository.findAll().size(), is(1));
 
         InformationType storedInformationType = repository.findByName(INFORMATION_NAME).get();
-        request.setDescription(INFORMATION_DESCRIPTION + "UPDATED");
+        request.setDescription(DESCRIPTION + "UPDATED");
         responseEntity = restTemplate.exchange(
                 "/backend/informationtype/" + storedInformationType.getId(), HttpMethod.PUT, new HttpEntity<>(request), String.class);
         assertThat(responseEntity.getStatusCode(), is(HttpStatus.ACCEPTED));
         assertThat(repository.findAll().size(), is(1));
         storedInformationType = repository.findByName(INFORMATION_NAME).get();
-        assertThat(storedInformationType.getDescription(), is(INFORMATION_DESCRIPTION + "UPDATED"));
+        assertThat(storedInformationType.getDescription(), is(DESCRIPTION + "UPDATED"));
         assertThat(storedInformationType.getElasticsearchStatus(), is(TO_BE_UPDATED));
     }
 
@@ -137,21 +144,21 @@ public class InformationTypeControllerIT {
     }
 
     private void assertInformationType(InformationType informationType) {
-        assertThat(informationType.getProducer(), is(INFORMATION_PRODUCER));
-        assertThat(informationType.getSystem(), is(INFORMATION_SYSTEM));
+        assertThat(informationType.getProducer(), is(PRODUCER_ID_SKATTEETATEN));
+        assertThat(informationType.getSystem(), is(SYSTEM_ID_AA_REG));
         assertThat(informationType.isPersonalData(), is(true));
         assertThat(informationType.getName(), is(INFORMATION_NAME));
-        assertThat(informationType.getDescription(), is(INFORMATION_DESCRIPTION));
-        assertThat(informationType.getCategory(), is(INFORMATION_CATEGORY));
+        assertThat(informationType.getDescription(), is(DESCRIPTION));
+        assertThat(informationType.getCategory(), is(CATEGORY_ID_PERSONALIA));
     }
 
     private InformationTypeRequest createRequest() {
         return InformationTypeRequest.builder()
-                .category(INFORMATION_CATEGORY)
-                .description(INFORMATION_DESCRIPTION)
+                .category(CATEGORY)
+                .description(DESCRIPTION)
                 .name(INFORMATION_NAME)
                 .personalData(true)
-                .system(INFORMATION_SYSTEM)
-                .producer(INFORMATION_PRODUCER).build();
+                .system(SYSTEM)
+                .producer(PRODUCER).build();
     }
 }

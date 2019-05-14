@@ -29,8 +29,11 @@ public class InformationTypeRequest {
 
 	private String name;
 	private String category;
+	private Long categoryId;
 	private String producer;
+	private Long producerId;
 	private String system;
+	private Long systemId;
 	private String description;
 	private Boolean personalData;
 

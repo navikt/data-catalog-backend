@@ -12,5 +12,4 @@ public interface CodelistRepository extends JpaRepository<Codelist, Integer> {
 	List<Codelist> findAllByList(@Param("list") String listName);
 
 	Optional<Codelist> findByListAndCode(@Param("list") ListName list, @Param("code") String code);
-
 }

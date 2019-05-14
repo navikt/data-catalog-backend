@@ -1,11 +1,11 @@
 package no.nav.data.catalog.backend.test.integration;
 
-import static no.nav.data.catalog.backend.app.common.utils.Constants.INFORMATION_CATEGORY;
-import static no.nav.data.catalog.backend.app.common.utils.Constants.INFORMATION_DESCRIPTION;
-import static no.nav.data.catalog.backend.app.common.utils.Constants.INFORMATION_NAME;
-import static no.nav.data.catalog.backend.app.common.utils.Constants.INFORMATION_PRODUCER;
-import static no.nav.data.catalog.backend.app.common.utils.Constants.INFORMATION_SYSTEM;
 import static no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus.SYNCED;
+import static no.nav.data.catalog.backend.test.integration.TestData.TestData.CATEGORY_ID_PERSONALIA;
+import static no.nav.data.catalog.backend.test.integration.TestData.TestData.DESCRIPTION;
+import static no.nav.data.catalog.backend.test.integration.TestData.TestData.INFORMATION_NAME;
+import static no.nav.data.catalog.backend.test.integration.TestData.TestData.PRODUCER_ID_SKATTEETATEN;
+import static no.nav.data.catalog.backend.test.integration.TestData.TestData.SYSTEM_ID_AA_REG;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
@@ -140,12 +140,12 @@ public class InformationTypeServiceIT {
     private void createTestData(ElasticsearchStatus esStatus) {
         InformationType informationType = InformationType.builder()
                 .elasticsearchId("elasticSearchId")
-                .category(INFORMATION_CATEGORY)
-                .system(INFORMATION_SYSTEM)
+                .category(CATEGORY_ID_PERSONALIA)
+                .system(SYSTEM_ID_AA_REG)
                 .elasticsearchStatus(esStatus)
                 .name(INFORMATION_NAME)
-                .description(INFORMATION_DESCRIPTION)
-                .producer(INFORMATION_PRODUCER)
+                .description(DESCRIPTION)
+                .producer(PRODUCER_ID_SKATTEETATEN)
                 .personalData(true).build();
         repository.save(informationType);
     }
@@ -162,11 +162,11 @@ public class InformationTypeServiceIT {
     }
 
     private void assertInformationType(Map<String, Object> esMap) {
-        assertThat(esMap.get("informationProducer"), is(INFORMATION_PRODUCER));
-        assertThat(esMap.get("informationSystem"), is(INFORMATION_SYSTEM));
+        assertThat(esMap.get("producer"), is(PRODUCER_ID_SKATTEETATEN.intValue()));
+        assertThat(esMap.get("system"), is(SYSTEM_ID_AA_REG.intValue()));
         assertThat(esMap.get("personalData"), is(true));
         assertThat(esMap.get("name"), is(INFORMATION_NAME));
-        assertThat(esMap.get("description"), is(INFORMATION_DESCRIPTION));
-        assertThat(esMap.get("informationCategory"), is(INFORMATION_CATEGORY));
+        assertThat(esMap.get("description"), is(DESCRIPTION));
+        assertThat(esMap.get("category"), is(CATEGORY_ID_PERSONALIA.intValue()));
     }
 }

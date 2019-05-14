@@ -54,6 +54,7 @@ public class GithubWebhooksController {
             requests.forEach(i -> {
                 try {
                     service.validateRequest(i, false); // TODO: What if this is an update?
+                    i = service.convertCodelistToId(i);
                 } catch (ValidationException e) {
                     // TODO må få fikset return
                     logger.error("Validation error occurred validating file downloaded from Github", e);
