@@ -22,6 +22,7 @@ import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
@@ -54,7 +55,7 @@ public class CodelistControllerTest {
 	@InjectMocks
 	private CodelistService service;
 
-	@Mock
+	@Spy
 	private CodelistRepository repository;
 
 	@Rule
@@ -157,12 +158,9 @@ public class CodelistControllerTest {
 				.description("Test save")
 				.build();
 		Codelist createdCodelist = request.convert();
-		createdCodelist.setId(10L);
-		String inputJson = objectMapper.writeValueAsString(request);
+		createdCodelist.setId(100L);
 
-		// given
-		given(service.save(request)).willReturn(createdCodelist);
-		given(repository.save(any(Codelist.class))).willReturn(createdCodelist);
+		String inputJson = objectMapper.writeValueAsString(request);
 
 		// when
 		MockHttpServletResponse response = mvc.perform(
@@ -198,7 +196,7 @@ public class CodelistControllerTest {
 		assertThat(response.getContentAsString()).isEqualTo(objectMapper.writeValueAsString(validationErrors));
 	}
 
-	/*@Test
+	@Test
 	public void update_shouldUpdateCodelist() throws Exception {
 		// initialize
 		CodelistRequest request = CodelistRequest.builder()
@@ -232,7 +230,7 @@ public class CodelistControllerTest {
 		// then
 		assertThat(response.getStatus()).isEqualTo(HttpStatus.ACCEPTED.value());
 		assertThat(codelists.get(ListName.PRODUCER).get("TEST_SAVE")).isEqualTo("UPDATED!");
-	}*/
+	}
 
 	@Test
 	public void update_shouldReturnBadRequest() throws Exception {
