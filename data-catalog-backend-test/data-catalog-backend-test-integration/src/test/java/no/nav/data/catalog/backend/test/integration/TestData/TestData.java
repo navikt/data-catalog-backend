@@ -1,5 +1,8 @@
 package no.nav.data.catalog.backend.test.integration.TestData;
 
+import no.nav.data.catalog.backend.app.codelist.CodelistRequest;
+import no.nav.data.catalog.backend.app.codelist.ListName;
+
 public class TestData {
 
 	public static final Long CATEGORY_ID_PERSONALIA = 7L;
@@ -10,4 +13,16 @@ public class TestData {
 	public static final String SYSTEM = "AA_REG";
 	public static final String INFORMATION_NAME = "InformationName";
 	public static final String DESCRIPTION = "InformationDescription";
+
+	public static final ListName CODELIST_LIST = ListName.PRODUCER;
+	public static final String CODELIST_CODE = "TEST_CODE";
+	public static final String CODELIST_DESCRIPTION = "Test description";
+
+	public static CodelistRequest createRequest() {
+		return CodelistRequest.builder()
+				.list(CODELIST_LIST)
+				.code(CODELIST_CODE)
+				.description(CODELIST_DESCRIPTION)
+				.build();
+	}
 }

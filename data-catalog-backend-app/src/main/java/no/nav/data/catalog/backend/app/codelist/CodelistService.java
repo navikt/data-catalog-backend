@@ -45,6 +45,15 @@ public class CodelistService {
 		return repository.save(request.convert());
 	}
 
+	public Codelist update(CodelistRequest request) {
+		codelists.get(request.getList()).put(request.getCode(), request.getDescription());
+
+		Codelist toBeUpdatedCodelist = repository.findByListAndCode(request.getList(), request.getCode()).get();
+		toBeUpdatedCodelist.setDescription(request.getDescription());
+
+		return repository.save(toBeUpdatedCodelist);
+	}
+
 	public void delete(ListName name, String code) {
 		Optional<Codelist> toDelete = repository.findByListAndCode(name, code);
 		if(toDelete.isPresent()) {

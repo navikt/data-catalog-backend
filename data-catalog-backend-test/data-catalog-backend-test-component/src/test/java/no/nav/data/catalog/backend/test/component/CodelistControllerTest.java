@@ -1,20 +1,27 @@
 package no.nav.data.catalog.backend.test.component;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import no.nav.data.catalog.backend.app.AppStarter;
+import no.nav.data.catalog.backend.app.codelist.Codelist;
+import no.nav.data.catalog.backend.app.codelist.CodelistRepository;
 import no.nav.data.catalog.backend.app.codelist.CodelistRequest;
 import no.nav.data.catalog.backend.app.codelist.CodelistService;
 import no.nav.data.catalog.backend.app.codelist.ListName;
+import no.nav.data.catalog.backend.app.informationtype.InformationType;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
@@ -46,6 +53,9 @@ public class CodelistControllerTest {
 
 	@InjectMocks
 	private CodelistService service;
+
+	@Mock
+	private CodelistRepository repository;
 
 	@Rule
 	public ExpectedException expectedException = ExpectedException.none();
@@ -146,7 +156,13 @@ public class CodelistControllerTest {
 				.code("TEST")
 				.description("Test save")
 				.build();
+		Codelist createdCodelist = request.convert();
+		createdCodelist.setId(10L);
 		String inputJson = objectMapper.writeValueAsString(request);
+
+		// given
+		given(service.save(request)).willReturn(createdCodelist);
+		given(repository.save(any(Codelist.class))).willReturn(createdCodelist);
 
 		// when
 		MockHttpServletResponse response = mvc.perform(

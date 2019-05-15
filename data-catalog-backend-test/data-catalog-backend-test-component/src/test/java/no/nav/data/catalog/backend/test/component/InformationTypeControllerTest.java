@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.elasticsearch.common.UUIDs.base64UUID;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.BDDMockito.willThrow;
@@ -12,6 +13,8 @@ import static org.mockito.Mockito.times;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import no.nav.data.catalog.backend.app.codelist.CodelistRepository;
+import no.nav.data.catalog.backend.app.codelist.ListName;
 import no.nav.data.catalog.backend.app.common.exceptions.ValidationException;
 import no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus;
 import no.nav.data.catalog.backend.app.informationtype.InformationType;
@@ -54,6 +57,9 @@ public class InformationTypeControllerTest {
 	@Mock
 	private InformationTypeService service;
 
+	@Mock
+	private CodelistRepository codelistRepository;
+
 
 	@Before
 	public void setup() {
@@ -64,9 +70,9 @@ public class InformationTypeControllerTest {
 				.id(1L)
 				.name("Test")
 				.description("Test av brukerinput")
-				.category("PERSONALIA")
-				.producer("BRUKER")
-				.system("TPS")
+				.category(7L)
+				.producer(2L)
+				.system(28L)
 				.personalData(true)
 				.elasticsearchId(base64UUID())
 				.elasticsearchStatus(ElasticsearchStatus.TO_BE_CREATED)
@@ -155,20 +161,28 @@ public class InformationTypeControllerTest {
 
 	@Test
 	public void createInformationType_shouldCreateNewInformationType_WithValidRequest() throws Exception {
+		// given
+
 		InformationTypeRequest request = InformationTypeRequest.builder()
 				.name("Test createInformationType")
 				.category("PERSONALIA")
+				.categoryId(7L)
 				.producer("BRUKER")
+				.producerId(2L)
 				.system("TPS")
+				.systemId(28L)
 				.description("Informasjon til test hentet av bruker")
 				.personalData(true)
 				.build();
 		InformationType createdInformationType = new InformationType().convertFromRequest(request, false);
 		createdInformationType.setId(10L);
 
-		// given
-		given(informationTypeRepository.save(any(InformationType.class)))
-				.willReturn(createdInformationType);
+//		given(codelistRepository.getByListAndCode(ListName.CATEGORY, "PERSONALIA")).willReturn(7L);
+//		given(codelistRepository.getByListAndCode(ListName.PRODUCER, "BRUKER")).willReturn(2L);
+//		given(codelistRepository.getByListAndCode(ListName.SYSTEM, "TPS")).willReturn(28L);
+//		given(informationTypeRepository.save(any(InformationType.class)))
+//				.willReturn(createdInformationType);
+
 
 
 		// when
@@ -380,9 +394,9 @@ public class InformationTypeControllerTest {
 				.id(2L)
 				.name("Test_2")
 				.description("Test av addresse")
-				.category("KONTAKTOPPLYSNINGER")
-				.producer("SKATTEETATEN")
-				.system("TPS")
+				.category(8L)
+				.producer(1L)
+				.system(28L)
 				.personalData(true)
 				.elasticsearchId(base64UUID())
 				.elasticsearchStatus(ElasticsearchStatus.TO_BE_CREATED)
@@ -392,9 +406,9 @@ public class InformationTypeControllerTest {
 				.id(3L)
 				.name("Test_3")
 				.description("Test av arbeidsgiver")
-				.category("ARBEIDSFORHOLD")
-				.producer("ARBEIDSGIVER")
-				.system("AA_REG")
+				.category(12L)
+				.producer(5L)
+				.system(32L)
 				.personalData(true)
 				.elasticsearchId(base64UUID())
 				.elasticsearchStatus(ElasticsearchStatus.TO_BE_CREATED)

@@ -14,10 +14,8 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.IdClass;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
-import java.io.Serializable;
 
 @Entity
 @Table(name = "CODELIST", schema = "BACKEND_SCHEMA")
@@ -25,7 +23,6 @@ import java.io.Serializable;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@IdClass(Codelist.IdClass.class)
 public class Codelist extends Auditable<String> {
 
 	@Id
@@ -36,22 +33,13 @@ public class Codelist extends Auditable<String> {
 	@Column(name = "CODELIST_ID", nullable = false, updatable = false, unique = true)
 	private Long id;
 
-	@Id
 	@Column(name = "LIST_NAME")
 	@Enumerated(EnumType.STRING)
 	private ListName list;
 
-	@Id
 	@Column(name = "CODE")
 	private String code;
 
 	@Column(name = "DESCRIPTION")
 	private String description;
-
-	@Data
-	static class IdClass implements Serializable {
-		private ListName list;
-		private String code;
-	}
-
 }
