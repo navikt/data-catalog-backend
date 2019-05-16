@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.elasticsearch.common.UUIDs.base64UUID;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.BDDMockito.willThrow;
@@ -21,12 +22,10 @@ import no.nav.data.catalog.backend.app.informationtype.InformationTypeRepository
 import no.nav.data.catalog.backend.app.informationtype.InformationTypeRequest;
 import no.nav.data.catalog.backend.app.informationtype.InformationTypeService;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Spy;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -51,13 +50,13 @@ public class InformationTypeControllerTest {
 	@InjectMocks
 	private InformationTypeController informationTypeController;
 
-	@Spy
+	@Mock
 	private InformationTypeRepository informationTypeRepository;
 
-	@Spy
+	@Mock
 	private InformationTypeService service;
 
-	@Spy
+	@Mock
 	private CodelistRepository codelistRepository;
 
 
@@ -159,12 +158,19 @@ public class InformationTypeControllerTest {
 		assertThat(response.getContentAsString()).isEmpty();
 	}
 
-	@Ignore
 	@Test
 	public void createInformationType_shouldCreateNewInformationType_WithValidRequest() throws Exception {
 		// given
-
 		InformationTypeRequest request = InformationTypeRequest.builder()
+				.name("Test createInformationType")
+				.category("PERSONALIA")
+				.producer("BRUKER")
+				.system("TPS")
+				.description("Informasjon til test hentet av bruker")
+				.personalData(true)
+				.build();
+
+		InformationTypeRequest requestWithId = InformationTypeRequest.builder()
 				.name("Test createInformationType")
 				.category("PERSONALIA")
 				.categoryId(7L)
@@ -179,12 +185,8 @@ public class InformationTypeControllerTest {
 		InformationType createdInformationType = new InformationType().convertFromRequest(request, false);
 		createdInformationType.setId(100L);
 
-//		given(codelistRepository.getByListAndCode(ListName.CATEGORY, "PERSONALIA")).willReturn(7L);
-//		given(codelistRepository.getByListAndCode(ListName.PRODUCER, "BRUKER")).willReturn(2L);
-//		given(codelistRepository.getByListAndCode(ListName.SYSTEM, "TPS")).willReturn(28L);
-//		given(informationTypeRepository.save(any(InformationType.class)))
-//				.willReturn(createdInformationType);
-
+		given(service.convertCodelistToId(request)).willReturn(requestWithId);
+		given(informationTypeRepository.save(any(InformationType.class))).willReturn(createdInformationType);
 
 		// when
 		MockHttpServletResponse response = mvc.perform(
@@ -262,7 +264,6 @@ public class InformationTypeControllerTest {
 		assertThat(response.getContentAsString()).isEqualTo(objectMapper.writeValueAsString(validationErrors));
 	}
 
-	@Ignore
 	@Test
 	public void updateInformationType_shouldUpdateInformationType_WithValidRequest() throws Exception {
 		Long id = 1L;
@@ -274,14 +275,26 @@ public class InformationTypeControllerTest {
 				.description("Test of updateInformationType")
 				.personalData(true)
 				.build();
-		assertThat(informationType.getElasticsearchStatus()).isEqualTo(ElasticsearchStatus.TO_BE_CREATED);
-		InformationType informationTypeToBeUpdated = informationType.convertFromRequest(request, true);
 
-		// given
-		given(informationTypeRepository.findById(id))
-				.willReturn(Optional.of(informationType));
-		given(informationTypeRepository.save(informationTypeToBeUpdated))
-				.willReturn(informationTypeToBeUpdated);
+		InformationTypeRequest requestWithId = InformationTypeRequest.builder()
+				.name("Test updateInformationType")
+				.category("PERSONALIA")
+				.categoryId(7L)
+				.producer("BRUKER")
+				.producerId(2L)
+				.system("TPS")
+				.systemId(28L)
+				.description("Test of updateInformationType")
+				.personalData(true)
+				.build();
+
+		assertThat(informationType.getElasticsearchStatus()).isEqualTo(ElasticsearchStatus.TO_BE_CREATED);
+		InformationType informationTypeToBeUpdated = new InformationType().convertFromRequest(request, true);
+
+
+		given(informationTypeRepository.findById(anyLong())).willReturn(Optional.of(informationType));
+		given(service.convertCodelistToId(request)).willReturn(requestWithId);
+		given(informationTypeRepository.save(any(InformationType.class))).willReturn(informationTypeToBeUpdated);
 
 		// when
 		MockHttpServletResponse response = mvc.perform(
