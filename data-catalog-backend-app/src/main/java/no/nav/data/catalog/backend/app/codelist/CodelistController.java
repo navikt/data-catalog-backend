@@ -1,20 +1,10 @@
 package no.nav.data.catalog.backend.app.codelist;
 
-import static no.nav.data.catalog.backend.app.codelist.CodelistService.codelists;
-
-import java.util.List;
-import java.util.Map;
-
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-import javax.transaction.Transactional;
-import javax.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -28,6 +18,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+import java.util.Map;
+import javax.transaction.Transactional;
+import javax.validation.Valid;
+
+import static no.nav.data.catalog.backend.app.codelist.CodelistService.codelists;
+
 @Slf4j
 @RestController
 @CrossOrigin
@@ -35,10 +32,11 @@ import org.springframework.web.bind.annotation.RestController;
 @Api(value = "Codelist", description = "REST API for common list of values", tags = { "Codelist" })
 public class CodelistController {
 
-	private static final Logger logger = LoggerFactory.getLogger(CodelistController.class);
+    private final CodelistService service;
 
-	@Autowired
-	private CodelistService service;
+    public CodelistController(CodelistService service) {
+        this.service = service;
+    }
 
 	@ApiOperation(value = "Get the entire Codelist", tags = {"Codelist"})
 	@ApiResponses(value = {
@@ -46,7 +44,7 @@ public class CodelistController {
 			@ApiResponse(code = 500, message = "Internal server error")})
 	@GetMapping
 	public Map findAll() {
-		logger.info("Received a request for and returned the entire Codelist");
+        log.info("Received a request for and returned the entire Codelist");
 		return codelists;
 	}
 
@@ -57,7 +55,7 @@ public class CodelistController {
 			@ApiResponse(code = 500, message = "Internal server error")})
 	@GetMapping("/{listName}")
 	public Map getCodelistByListName(@PathVariable String listName) {
-		logger.info("Received a request for the codelist with listName={}", listName);
+        log.info("Received a request for the codelist with listName={}", listName);
 		service.validateListNameExists(listName);
 		return codelists.get(ListName.valueOf(listName.toUpperCase()));
 	}
@@ -69,7 +67,7 @@ public class CodelistController {
 			@ApiResponse(code = 500, message = "Internal server error")})
 	@GetMapping("/{listName}/{code}")
 	public String getDescriptionByListNameAndCode(@PathVariable String listName, @PathVariable String code) {
-		logger.info("Received a request for the description of code={} in list={}", code, listName);
+        log.info("Received a request for the description of code={} in list={}", code, listName);
 		service.validateListNameAndCodeExists(listName, code);
 		return codelists.get(ListName.valueOf(listName.toUpperCase())).get(code.toUpperCase());
 	}
@@ -82,8 +80,8 @@ public class CodelistController {
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	public List<Codelist> save(@Valid @RequestBody List<CodelistRequest> requests) {
-		logger.info("Received a requests to create codelists");
-		service.validateRequests(requests, false);
+        log.info("Received a requests to create codelists");
+        service.validate(requests, false);
 
 		return service.save(requests);
 	}
@@ -96,8 +94,8 @@ public class CodelistController {
 	@PutMapping
 	@ResponseStatus(HttpStatus.ACCEPTED)
 	public List<Codelist> update(@Valid @RequestBody List<CodelistRequest> requests) {
-		logger.info("Received a request to update codelists");
-		service.validateRequests(requests, true);
+        log.info("Received a request to update codelists");
+        service.validate(requests, true);
 
 		return service.update(requests);
 	}
@@ -112,10 +110,10 @@ public class CodelistController {
 	public void delete(@PathVariable String listName, @PathVariable String code) {
 		listName = listName.toUpperCase().trim();
 		code = code.toUpperCase().trim();
-		logger.info("Received a request to delete code={} in the list={}", code, listName);
+        log.info("Received a request to delete code={} in the list={}", code, listName);
 		service.validateListNameAndCodeExists(listName, code);
 		service.delete(ListName.valueOf(listName), code);
-		logger.info("Deleted code={} in the list={}", code, listName);
+        log.info("Deleted code={} in the list={}", code, listName);
 	}
 
 	@ApiOperation(value = "Refresh Codelist", tags = {"Codelist"})
@@ -124,7 +122,7 @@ public class CodelistController {
 			@ApiResponse(code = 500, message = "Internal server error")})
 	@GetMapping("/refresh")
 	public ResponseEntity refresh() {
-		logger.info("Refreshed the codelists");
+        log.info("Refreshed the codelists");
 		service.refreshCache();
 		return new ResponseEntity(HttpStatus.OK);
 	}

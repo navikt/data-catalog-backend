@@ -21,7 +21,7 @@ public class Codelist extends Auditable<String> {
 	@Id
 	@Column(name = "LIST_NAME")
 	@Enumerated(EnumType.STRING)
-	private ListName list;
+    private ListName listName;
 
 	@Id
 	@Column(name = "CODE")

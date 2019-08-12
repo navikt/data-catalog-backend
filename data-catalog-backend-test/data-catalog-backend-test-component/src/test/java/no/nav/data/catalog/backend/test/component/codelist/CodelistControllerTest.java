@@ -72,18 +72,18 @@ public class CodelistControllerTest {
     public ExpectedException expectedException = ExpectedException.none();
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         CodelistStub.initializeCodelistAndStub();
     }
 
     @Test
     public void findAll_shouldReturnTheInitiatedCodelist() throws Exception {
         MockHttpServletResponse response = mvc.perform(get("/codelist"))
+                .andExpect(status().isOk())
                 .andReturn().getResponse();
 
-        HashMap<String, HashMap<String, String>> returnedCodelist = objectMapper.readValue(response.getContentAsString(), HashMap.class);
+        Map<String, Map<String, String>> returnedCodelist = objectMapper.readValue(response.getContentAsString(), HashMap.class);
 
-        assertThat(response.getStatus(), is(HttpStatus.OK.value()));
         assertThat(returnedCodelist.size(), is(CodelistService.codelists.size()));
         assertThat(returnedCodelist.get("PRODUCER").size(), is(3));
         assertThat(returnedCodelist.get("CATEGORY").size(), is(3));
@@ -145,7 +145,7 @@ public class CodelistControllerTest {
 
         List<CodelistRequest> requests = IntStream.rangeClosed(1, 10)
                 .mapToObj(i -> CodelistRequest.builder()
-                        .list(ListName.PRODUCER)
+                        .listName("PRODUCER")
                         .code("CODE_nr:" + i)
                         .description("Description")
                         .build())
@@ -163,7 +163,7 @@ public class CodelistControllerTest {
     @Test
     public void save_shouldReturnBadRequestWhenFailsValidation() throws Exception {
         String errorMessage = "The request was not accepted because it is empty";
-        doThrow(new ValidationException(errorMessage)).when(service).validateRequests(anyList(), anyBoolean());
+        doThrow(new ValidationException(errorMessage)).when(service).validate(anyList(), anyBoolean());
 
         String inputJson = objectMapper.writeValueAsString(Collections.emptyList());
 
@@ -181,7 +181,7 @@ public class CodelistControllerTest {
 
         List<CodelistRequest> requests = IntStream.rangeClosed(1, 10)
                 .mapToObj(i -> CodelistRequest.builder()
-                        .list(ListName.PRODUCER)
+                        .listName("PRODUCER")
                         .code("CODE_nr:" + i)
                         .description("Description")
                         .build())
@@ -199,7 +199,7 @@ public class CodelistControllerTest {
     @Test
     public void update_shouldReturnBadRequest_withEmptyListOfRequests() throws Exception {
         String errorMessage = "The request was not accepted because it is empty";
-        doThrow(new ValidationException(errorMessage)).when(service).validateRequests(anyList(), anyBoolean());
+        doThrow(new ValidationException(errorMessage)).when(service).validate(anyList(), anyBoolean());
 
         String inputJson = objectMapper.writeValueAsString(Collections.emptyList());
 

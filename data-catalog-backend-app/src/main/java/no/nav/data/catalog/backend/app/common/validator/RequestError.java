@@ -18,11 +18,15 @@ public class RequestError {
         validationErrors.add(error);
     }
 
-    public String get() {
-        return validationErrors.stream().map(ValidationError::get).collect(Collectors.joining());
+    public String toErrorString() {
+        return validationErrors.stream().map(ValidationError::toErrorString).collect(Collectors.joining());
     }
 
     public boolean hasErrors() {
         return !validationErrors.isEmpty();
+    }
+
+    public int size() {
+        return validationErrors.size();
     }
 }

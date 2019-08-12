@@ -11,7 +11,7 @@ public class ValidationError {
         this.errorMessage = errorMessage;
     }
 
-    public String get() {
+    public String toErrorString() {
         return String.format("%s -- %s -- %s", reference, errorType, errorMessage);
     }
 }

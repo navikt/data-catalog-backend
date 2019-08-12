@@ -47,7 +47,7 @@ public class RequestValidator<T extends RequestItem> {
             requestIndex.incrementAndGet();
             String itemIdentifier = request.identifyingFields();
             if (itemIdentifierToRequestIndex.containsKey(itemIdentifier)) {
-                requestErrors.addError(new ValidationError("Request:" + requestIndex, "DuplicateError",
+                requestErrors.addError(new ValidationError("Request:" + requestIndex, "Duplicate",
                         String.format("The %s %s is not unique because it has already been used in this request (see request:%s)",
                                 request.getItemType(), itemIdentifier, itemIdentifierToRequestIndex.get(itemIdentifier)
                         )));
@@ -55,6 +55,10 @@ public class RequestValidator<T extends RequestItem> {
                 itemIdentifierToRequestIndex.put(itemIdentifier, requestIndex.intValue());
             }
         });
+    }
+
+    public void addErrorIfPresent(List<ValidationError> validationErrors) {
+        validationErrors.forEach(error -> this.requestErrors.addError(error));
     }
 
     public void wrapUpValidation() {
