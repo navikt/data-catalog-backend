@@ -19,7 +19,7 @@ public class RequestError {
     }
 
     public String toErrorString() {
-        return validationErrors.stream().map(ValidationError::toErrorString).collect(Collectors.joining());
+        return validationErrors.stream().map(ValidationError::toErrorString).collect(Collectors.joining(", "));
     }
 
     public boolean hasErrors() {
