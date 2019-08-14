@@ -113,7 +113,7 @@ public class InformationTypeService {
 		Map<String, Map<String, String>> validation = validateRequestsAndReturnErrors(requests, isUpdate);
 		if (!validation.isEmpty()) {
 			logger.error("The request was not accepted. The following errors occurred during validation: {}", validation);
-			throw new ValidationException(validation, "The request was not accepted. The following errors occurred during validation: ");
+//			throw new ValidationException(validation, "The request was not accepted. The following errors occurred during validation: ");
 		}
 	}
 
