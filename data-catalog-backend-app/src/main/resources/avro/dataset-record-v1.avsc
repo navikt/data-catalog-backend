@@ -1,0 +1,138 @@
+{
+	"type": "record",
+	"name": "DatasetRecord",
+	"namespace": "no.nav.data.catalog.backend.app.avro.dataset",
+	"version": "1",
+	"fields": [
+		{
+			"name": "contentType",
+			"type": {
+				"type": "enum",
+				"name": "ContentTypeSchema",
+				"symbols": [
+					"DATASET",
+					"DATAPACKAGE"
+				]
+			},
+			"default": "DATASET",
+			"doc": "The contet type of the data"
+		},
+		{
+			"name": "title",
+			"type": "string",
+			"doc": "The title for the Dataset. Must be unique"
+		},
+		{
+			"name": "description",
+			"type": "string",
+			"default": "",
+			"doc": "A description for the Dataset"
+		},
+		{
+			"name": "categories",
+			"type": {
+				"type": "array",
+				"items": "string"
+			},
+			"default": [],
+			"doc": "The categories for the Dataset"
+		},
+		{
+			"name": "provenances",
+			"type": {
+				"type": "array",
+				"items": "string"
+			},
+			"default": [],
+			"doc": "The origin of or the earlist known history of the Dataset"
+		},
+		{
+			"name": "pii",
+			"type": "boolean",
+			"doc": "Personal identifiable information. Any data that could potentially identify a specific individual"
+		},
+		{
+			"name": "keywords",
+			"type": {
+				"type": "array",
+				"items": "string"
+				},
+			"default": [],
+			"doc": "?"
+		},
+		{
+			"name": "themes",
+			"type": {
+				"type": "array",
+				"items": "string"
+			},
+			"default": [],
+			"doc": "?"
+		},
+		{
+			"name": "accessRights",
+			"type": "string",
+			"default": "?",
+			"doc": "?"
+		},
+		{
+			"name": "spatial",
+			"type": "string",
+			"default": "?",
+			"doc": "?"
+		},
+		{
+			"name": "haspart",
+			"type": {
+				"type": "array",
+				"items": "string"
+			},
+			"default": [],
+			"doc": "?"
+		},
+		{
+			"name": "distributionChannels",
+			"type": {
+				"type": "array",
+				"items": {
+					"type": "record",
+					"name": "DistributionChannelSchema",
+					"namespace": "no.nav.data.catalog.backend.app.avro.distributionchannel",
+					"fields": [
+						{
+							"name": "name",
+							"type": "string",
+							"doc": "The name of the distribution channel. Must be unique"
+						},
+						{
+							"name": "type",
+							"type": {
+								"type": "enum",
+								"name": "DistributionChannelType",
+								"symbols": [
+									"KAFKA",
+									"REST",
+									"SOAP",
+									"MQ",
+									"FIL"
+								]
+							},
+							"doc": "The type of distribution for this channel"
+						}
+					]
+				}
+			}
+		},
+		{
+			"name": "issued",
+			"type": "string",
+			"doc": "ISO date time at which the dataset was issued"
+		},
+		{
+			"name": "publisher",
+			"type": "string",
+			"default": "",
+			"doc": "?"
+		}
+	]
+}
