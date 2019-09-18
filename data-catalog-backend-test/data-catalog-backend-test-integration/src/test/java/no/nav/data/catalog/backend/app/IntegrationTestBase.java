@@ -7,6 +7,7 @@ import no.nav.data.catalog.backend.app.common.nais.LeaderElectionService;
 import no.nav.data.catalog.backend.app.common.utils.JsonUtils;
 import no.nav.data.catalog.backend.app.dataset.repo.DatasetRepository;
 import no.nav.data.catalog.backend.app.distributionchannel.DistributionChannelRepository;
+import no.nav.data.catalog.backend.app.kafka.SchemaRegistryContainer;
 import no.nav.data.catalog.backend.app.system.SystemRepository;
 import org.junit.After;
 import org.junit.Before;
@@ -23,6 +24,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.util.SocketUtils;
+import org.testcontainers.containers.KafkaContainer;
 
 import java.util.UUID;
 
@@ -44,6 +46,7 @@ public abstract class IntegrationTestBase {
 
     private static final int WIREMOCK_PORT = SocketUtils.findAvailableTcpPort();
     public static final int ELASTICSEARCH_PORT = SocketUtils.findAvailableTcpPort();
+    private static final String CONFLUENT_VERSION = "5.3.0";
 
     protected static final UUID DATASET_ID_1 = UUID.fromString("acab158d-67ef-4030-a3c2-195e993f18d2");
 
@@ -51,6 +54,10 @@ public abstract class IntegrationTestBase {
     public static PostgresTestContainer postgreSQLContainer = PostgresTestContainer.getInstance();
     @ClassRule
     public static WireMockClassRule wiremock = new WireMockClassRule(WIREMOCK_PORT);
+    @ClassRule
+    public static KafkaContainer kafkaContainer = new KafkaContainer(CONFLUENT_VERSION);
+    @ClassRule
+    public static SchemaRegistryContainer schemaRegistryContainer = new SchemaRegistryContainer(CONFLUENT_VERSION, kafkaContainer);
     @Autowired
     protected TransactionTemplate transactionTemplate;
     @Autowired
@@ -93,7 +100,9 @@ public abstract class IntegrationTestBase {
         public void initialize(ConfigurableApplicationContext configurableApplicationContext) {
             TestPropertyValues.of(
                     "elasticsearch.port=" + ELASTICSEARCH_PORT,
-                    "wiremock.server.port=" + WIREMOCK_PORT
+                    "wiremock.server.port=" + WIREMOCK_PORT,
+                    "KAFKA_BOOTSTRAP_SERVERS=" + kafkaContainer.getBootstrapServers(),
+                    "KAFKA_SCHEMA_REGISTRY_URL=" + schemaRegistryContainer.getAddress()
             ).applyTo(configurableApplicationContext.getEnvironment());
         }
     }
