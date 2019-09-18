@@ -46,7 +46,7 @@ public class DatasetService extends RequestValidator<DatasetRequest> {
     private final DistributionChannelRepository distributionChannelRepository;
 
     public DatasetService(DatasetRelationRepository datasetRelationRepository, DatasetRepository datasetRepository,
-            DistributionChannelRepository distributionChannelRepository) {
+                          DistributionChannelRepository distributionChannelRepository) {
         this.datasetRelationRepository = datasetRelationRepository;
         this.datasetRepository = datasetRepository;
         this.distributionChannelRepository = distributionChannelRepository;
@@ -278,5 +278,9 @@ public class DatasetService extends RequestValidator<DatasetRequest> {
     @Transactional
     public void sync(List<UUID> ids) {
         datasetRepository.findAllById(ids).forEach(dataset -> dataset.setElasticsearchStatus(ElasticsearchStatus.TO_BE_UPDATED));
+    }
+
+    public boolean existingDatasetTitle(String title) {
+        return datasetRepository.findByTitle(title).isPresent();
     }
 }
