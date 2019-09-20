@@ -3,16 +3,22 @@ package no.nav.data.catalog.backend.app;
 import com.github.tomakehurst.wiremock.http.ContentTypeHeader;
 import com.github.tomakehurst.wiremock.junit.WireMockClassRule;
 import no.nav.data.catalog.backend.app.IntegrationTestBase.Initializer;
+import no.nav.data.catalog.backend.app.codelist.CodelistRepository;
+import no.nav.data.catalog.backend.app.codelist.CodelistService;
 import no.nav.data.catalog.backend.app.common.nais.LeaderElectionService;
 import no.nav.data.catalog.backend.app.common.utils.JsonUtils;
 import no.nav.data.catalog.backend.app.dataset.repo.DatasetRepository;
 import no.nav.data.catalog.backend.app.distributionchannel.DistributionChannelRepository;
+import no.nav.data.catalog.backend.app.kafka.KafkaContainer;
+import no.nav.data.catalog.backend.app.kafka.SchemaRegistryContainer;
+import no.nav.data.catalog.backend.app.kafka.dataset.KafkaTopicProperties;
 import no.nav.data.catalog.backend.app.system.SystemRepository;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.util.TestPropertyValues;
 import org.springframework.context.ApplicationContextInitializer;
@@ -47,7 +53,6 @@ public abstract class IntegrationTestBase {
 
     protected static final UUID DATASET_ID_1 = UUID.fromString("acab158d-67ef-4030-a3c2-195e993f18d2");
 
-    @ClassRule
     public static PostgresTestContainer postgreSQLContainer = PostgresTestContainer.getInstance();
     @ClassRule
     public static WireMockClassRule wiremock = new WireMockClassRule(WIREMOCK_PORT);
@@ -59,6 +64,21 @@ public abstract class IntegrationTestBase {
     protected SystemRepository systemRepository;
     @Autowired
     protected DatasetRepository datasetRepository;
+    @Autowired
+    protected CodelistService codelistService;
+    @Autowired
+    protected CodelistRepository codelistRepository;
+    @Autowired
+    protected KafkaTopicProperties topicProperties;
+    @Value("${spring.kafka.consumer.group-id}")
+    protected String groupId;
+
+    static {
+        //TODO: Fix this on tuesday!
+        new KafkaIntegrationTestBase() {
+        };
+        postgreSQLContainer.start();
+    }
 
     @Before
     public void setUpAbstract() throws Exception {
@@ -93,7 +113,9 @@ public abstract class IntegrationTestBase {
         public void initialize(ConfigurableApplicationContext configurableApplicationContext) {
             TestPropertyValues.of(
                     "elasticsearch.port=" + ELASTICSEARCH_PORT,
-                    "wiremock.server.port=" + WIREMOCK_PORT
+                    "wiremock.server.port=" + WIREMOCK_PORT,
+                    "KAFKA_BOOTSTRAP_SERVERS=" + KafkaContainer.getAddress(),
+                    "KAFKA_SCHEMA_REGISTRY_URL=" + SchemaRegistryContainer.getAddress()
             ).applyTo(configurableApplicationContext.getEnvironment());
         }
     }
