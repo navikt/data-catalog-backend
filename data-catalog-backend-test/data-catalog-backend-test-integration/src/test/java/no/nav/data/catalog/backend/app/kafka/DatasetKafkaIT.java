@@ -1,6 +1,6 @@
 package no.nav.data.catalog.backend.app.kafka;
 
-import no.nav.data.catalog.backend.app.IntegrationTestBase;
+import no.nav.data.catalog.backend.app.KafkaIntegrationTestBase;
 import no.nav.data.catalog.backend.app.avro.dataset.ContentTypeSchema;
 import no.nav.data.catalog.backend.app.avro.dataset.DatasetRecord;
 import no.nav.data.catalog.backend.app.avro.distributionchannel.DistributionChannelSchema;
@@ -13,6 +13,7 @@ import no.nav.data.catalog.backend.app.dataset.DatasetService;
 import no.nav.data.catalog.backend.app.dataset.repo.DatasetRepository;
 import no.nav.data.catalog.backend.app.distributionchannel.DistributionChannelShort;
 import org.awaitility.Duration;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +26,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
 
-public class DatasetKafkaIT extends IntegrationTestBase {
+public class DatasetKafkaIT extends KafkaIntegrationTestBase {
 
     @Autowired
     private DatasetService datasetService;
@@ -37,8 +38,19 @@ public class DatasetKafkaIT extends IntegrationTestBase {
 
     @Before
     public void setUp() {
+//        datasetRepository.deleteAll();
+//        codelistRepository.deleteAll();
+//        codelistService.refreshCache();
         createCodelistItemArbeidsforhold();
         fixedLocalDateTime = LocalDateTime.of(2000, 1, 1, 0, 0);
+    }
+
+    @After
+    public void tearDown() {
+        datasetRepository.deleteAll();
+        distributionChannelRepository.deleteAll();
+        systemRepository.deleteAll();
+        codelistRepository.deleteAll();
     }
 
     @Test
