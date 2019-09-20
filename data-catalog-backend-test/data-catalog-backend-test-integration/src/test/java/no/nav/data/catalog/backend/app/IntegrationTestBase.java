@@ -5,6 +5,7 @@ import com.github.tomakehurst.wiremock.junit.WireMockClassRule;
 import io.confluent.kafka.serializers.KafkaAvroSerializer;
 import no.nav.data.catalog.backend.app.IntegrationTestBase.Initializer;
 import no.nav.data.catalog.backend.app.avro.dataset.DatasetRecord;
+import no.nav.data.catalog.backend.app.codelist.CodelistRepository;
 import no.nav.data.catalog.backend.app.codelist.CodelistService;
 import no.nav.data.catalog.backend.app.common.nais.LeaderElectionService;
 import no.nav.data.catalog.backend.app.common.utils.JsonUtils;
@@ -80,6 +81,8 @@ public abstract class IntegrationTestBase {
     protected DatasetRepository datasetRepository;
     @Autowired
     protected CodelistService codelistService;
+    @Autowired
+    protected CodelistRepository codelistRepository;
     @Autowired
     protected KafkaTopicProperties topicProperties;
     @Value("${spring.kafka.consumer.group-id}")
