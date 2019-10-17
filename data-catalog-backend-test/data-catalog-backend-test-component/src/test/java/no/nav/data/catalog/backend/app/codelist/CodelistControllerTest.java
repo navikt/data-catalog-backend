@@ -66,10 +66,11 @@ class CodelistControllerTest {
         assertThat(returnedCodelist.size()).isEqualTo(CodelistCache.getAllAsMap().size());
         assertThat(returnedCodelist.get("PROVENANCE").size()).isEqualTo(3);
         assertThat(returnedCodelist.get("CATEGORY").size()).isEqualTo(3);
+        assertThat(returnedCodelist.get("LEGALBASIS").size()).isEqualTo(2);
     }
 
     @Test
-    void getCodelistByListName_shouldReturnCodelistForProducer() throws Exception {
+    void getCodelistByListName_shouldReturnCodelistForProvenance() throws Exception {
         String uri = "/codelist/PROVENANCE";
 
         MockHttpServletResponse response = mvc.perform(get(uri))
@@ -78,6 +79,18 @@ class CodelistControllerTest {
 
         Map mappedResponse = JsonUtils.toObject(response.getContentAsString(), HashMap.class);
         assertThat(mappedResponse).isEqualTo(CodelistCache.getAsMap(ListName.PROVENANCE));
+    }
+
+    @Test
+    void getCodelistByListName_shouldReturnCodelistForLegalBasis() throws Exception {
+        String uri = "/codelist/LEGALBASIS";
+
+        MockHttpServletResponse response = mvc.perform(get(uri))
+                .andExpect(status().isOk())
+                .andReturn().getResponse();
+
+        Map mappedResponse = JsonUtils.toObject(response.getContentAsString(), HashMap.class);
+        assertThat(mappedResponse).isEqualTo(CodelistCache.getAsMap(ListName.LEGALBASIS));
     }
 
     @Test
@@ -103,6 +116,18 @@ class CodelistControllerTest {
 
         assertThat(response.getContentAsString()).isEqualTo("Arbeidsgiver");
     }
+
+    @Test
+    void getDescriptionByListNameAndCode_shouldReturnDescriptionForLEGALBASIS_FTRL() throws Exception {
+        String uri = "/codelist/LEGALBASIS/FTRL";
+
+        MockHttpServletResponse response = mvc.perform(get(uri))
+                .andExpect(status().isOk())
+                .andReturn().getResponse();
+
+        assertThat(response.getContentAsString()).isEqualTo("1997-02-28-19");
+    }
+
 
     @Test
     void getDescriptionByListNameAndCode_shouldReturnNotFound_whenUnknownCode() throws Exception {

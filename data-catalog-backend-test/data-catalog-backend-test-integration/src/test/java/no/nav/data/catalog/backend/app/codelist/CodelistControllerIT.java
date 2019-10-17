@@ -53,7 +53,7 @@ class CodelistControllerIT extends IntegrationTestBase {
                 "/codelist", HttpMethod.GET, HttpEntity.EMPTY, Map.class);
 
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(responseEntity.getBody().size()).isEqualTo(3);
+        assertThat(responseEntity.getBody().size()).isEqualTo(4);
 
         Arrays.stream(ListName.values())
                 .forEach(listName -> assertThat(responseEntity.getBody()
